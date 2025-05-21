@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyBudget - Назва сторінки</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .left-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .left-section {
+      margin-left: 185px;
+      margin-right: 185px;
+    }
+    .stats-filters {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stats-filters select,
+    .stats-filters button {
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .summary-cards {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .summary-card {
+      flex: 1;
+      text-align: center;
+      padding: 20px;
+      border-radius: 14px;
+      background: linear-gradient(
+        145deg,
+        rgba(100, 160, 240, 0.25),
+        rgba(180, 220, 255, 0.15)
+      );
+      backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid rgba(180, 220, 255, 0.3);
+      box-shadow:
+        0 4px 12px rgba(100, 200, 255, 0.2),
+        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    }
+    .stats-visual {
+      margin-top: 40px;
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .bar-chart {
+      flex: 1 1 48%;
+      min-height: 200px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ccc;
+    }
+    .transaction-table {
+      margin-top: 40px;
+      overflow-x: auto;
+    }
+    .transaction-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .transaction-table th,
+    .transaction-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .transaction-table th {
+      color: #5dade2;
+    }
+    .transaction-table td {
+      color: #ccc;
+    }
+    .stats-filters select {
+  background-color: rgba(20, 40, 60, 0.8); /* темніший фон */
+  color: #fff; /* білий текст */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.stats-filters select option {
+  background-color: #1b2c3d; /* фон для списку */
+  color: #fff; /* колір тексту */
+}
+.charts-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 20px;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  gap: 5px 30px;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 14px;
+  text-align: left;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+#barChart {
+  width: 600px;
+}
+
+
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="home.html" class="site-name link-as-text"><i class="fa-solid fa-wallet"></i> MyBudget</a>
+    <div class="nav-right">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </nav>
+
+  <div id="menu-modal" class="menu-modal hidden">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
+    <a href="stats.html"><i class="fa-solid fa-chart-column"></i> Статистика</a>
+    <a href="about.html"><i class="fa-solid fa-circle-info"></i> Про нас</a>
+  </div>
+
+  <div class="container">
+    <div class="left-section">
+      <div class="left-col glass-panel" style="min-height: 300px;">
+        <h1><i class="fa-solid fa-chart-column"></i> Детальна статистика</h1>
+<div class="stats-filters">
+  <select id="stats-range">
+    <option value="month">Останній місяць</option>
+    <option value="year">Останній рік</option>
+    <option value="custom">Вибрати діапазон</option>
+  </select>
+  <input type="date" id="start-date" style="display:none;">
+  <input type="date" id="end-date" style="display:none;">
+</div>
+<div class="summary-cards" id="summary-cards">
+  <div class="summary-card income"><i class="fa-solid fa-arrow-down"></i> Доходи: <span id="total-income">0 ₴</span></div>
+  <div class="summary-card expense"><i class="fa-solid fa-arrow-up"></i> Витрати: <span id="total-expense">0 ₴</span></div>
+  <div class="summary-card transactions"><i class="fa-solid fa-receipt"></i> Транзакцій: <span id="total-transactions">0</span></div>
+</div>
+  <div class="charts-container">
+    <div class="left-panel">
+      <div class="pie-chart" id="pie-chart"></div>
+      <div id="legend" class="legend-grid"></div>
+    </div>
+    <div class="right-panel">
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+
+  <hr class="legend-separator">
+  <h1 id="hist-name"><i class="fa-solid fa-clock-rotate-left"></i> Історія</h1>
+
+        <div class="transaction-table">
+          
+          <input
+            type="text"
+            id="stats-search"
+            placeholder="Пошук за назвою або категорією..."
+            style="margin-bottom: 12px; padding: 8px 12px; border-radius: 8px; border: none; width: 100%; background: rgba(255,255,255,0.08); color: white;"
+          />
+          <table>
+            <thead>
+              <tr><th>Дата</th><th>Категорія</th><th>Сума</th><th>Тип</th></tr>
+            </thead>
+            <tbody id="stats-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer></footer>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+      let income = 0, expenses = 0;
+      const tbody = document.getElementById("stats-table-body");
+      tbody.innerHTML = "";
+
+      transactions.forEach(t => {
+        const amount = parseFloat(t.amount);
+        const date = new Date(t.date);
+        const formattedDate = date.toLocaleDateString("uk-UA", {
+          day: "2-digit", month: "2-digit", year: "2-digit"
+        });
+        if (amount < 0) {
+          income += Math.abs(amount);
+        } else {
+          expenses += amount;
+        }
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+  <td>${formattedDate}</td>
+  <td>${t.category}</td>
+  <td>${amount < 0 ? '+' : '-'}${Math.abs(amount)} ₴</td>
+  <td>${amount < 0 ? 'Дохід' : 'Витрата'}</td>
+`;
+
+        tbody.appendChild(row);
+      });
+      document.getElementById("total-income").textContent = income.toFixed(2) + " ₴";
+      document.getElementById("total-expense").textContent = expenses.toFixed(2) + " ₴";
+      document.getElementById("net-balance").textContent = (income - expenses).toFixed(2) + " ₴";
+      updatePieChart();
+    });
+
+     function filterTransactions(transactions, rangeType, start = null, end = null) {
+    const now = new Date();
+    return transactions.filter(t => {
+      const d = new Date(t.date);
+      if (rangeType === 'month') {
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }
+      if (rangeType === 'year') {
+        return d.getFullYear() === now.getFullYear();
+      }
+      if (rangeType === 'custom' && start && end) {
+        return d >= start && d <= end;
+      }
+      return true;
+    });
+  }
+  function renderStats() {
+    const rangeType = document.getElementById('stats-range').value;
+    const start = new Date(document.getElementById('start-date').value);
+    const end = new Date(document.getElementById('end-date').value);
+    const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+    const filtered = filterTransactions(transactions, rangeType, start, end);
+
+    let income = 0, expenses = 0;
+    const tbody = document.getElementById("stats-table-body");
+    tbody.innerHTML = "";
+
+    filtered.forEach(t => {
+      const amount = parseFloat(t.amount);
+      const date = new Date(t.date);
+      const formattedDate = date.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "2-digit" });
+
+      if (amount < 0) income += Math.abs(amount);
+      else expenses += amount;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+  <td>${formattedDate}</td>
+  <td>${t.category}</td>
+  <td>${amount < 0 ? '+' : '-'}${Math.abs(amount)} ₴</td>
+  <td>${amount < 0 ? 'Дохід' : 'Витрата'}</td>
+`;
+
+      ;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById("total-income").textContent = income.toFixed(2) + " ₴";
+    document.getElementById("total-expense").textContent = expenses.toFixed(2) + " ₴";
+    document.getElementById("total-transactions").textContent = filtered.length;
+    window.filteredForChart = filtered;
+    updatePieChart(false, filtered);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const rangeSelector = document.getElementById("stats-range");
+    const startInput = document.getElementById("start-date");
+    const endInput = document.getElementById("end-date");
+    rangeSelector.addEventListener("change", () => {
+      const val = rangeSelector.value;
+      const showCustom = val === "custom";
+      startInput.style.display = showCustom ? "inline-block" : "none";
+      endInput.style.display = showCustom ? "inline-block" : "none";
+      renderStats();
+    });
+    startInput.addEventListener("change", renderStats);
+    endInput.addEventListener("change", renderStats);
+    renderStats();
+  });
+
+  function updatePieChart(animate = true, customTransactions = null) {
+    const allTransactions = customTransactions || JSON.parse(localStorage.getItem('transactions') || '[]');
+    const transactions = allTransactions.filter(t => t.category !== 'Дохід');
+    const chart = document.getElementById('pie-chart');
+    const legend = document.getElementById('legend') || document.createElement('div');
+    if (!legend.id) {
+      legend.id = 'legend';
+      chart.parentElement.appendChild(legend);
+    }
+    if (transactions.length === 0) {
+      chart.style.background = 'conic-gradient(#ccc 0deg 360deg)';
+      legend.innerHTML = '<p>Немає даних про витрати</p>';
+      return;
+    }
+    const categorySums = {};
+    transactions.forEach(t => {
+      const category = t.category || 'Інше';
+      if (!categorySums[category]) categorySums[category] = 0;
+      categorySums[category] += parseFloat(t.amount);
+    });
+    const total = Object.values(categorySums).reduce((a, b) => a + b, 0);
+    const colors = {
+      'Продукти': '#f39c12', 'Транспорт': '#2980b9', 'Кафе': '#e74c3c',
+      'Здоров\'я': '#27ae60', 'Відпочинок': '#8e44ad', 'Благодійність': '#2ecc71',
+      'Дім': '#3498db', 'Інше': '#7f8c8d'
+    };
+    let gradient = 'conic-gradient(', startDeg = 0;
+    legend.innerHTML = '';
+    for (const [cat, sum] of Object.entries(categorySums)) {
+      const angle = (sum / total) * 360;
+      const color = colors[cat] || '#bdc3c7';
+      gradient += `${color} ${startDeg}deg ${startDeg + angle}deg, `;
+
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-color" style="background:${color};"></span>${cat}: ${(sum / total * 100).toFixed(1)}%`;
+    legend.appendChild(item);
+
+      startDeg += angle;
+    }
+    chart.style.background = gradient.slice(0, -2) + ')';
+  }
+
+  // Підрахунок кількості транзакцій по кожній категорії
+  function countTransactionsByCategory(transactions) {
+    const counts = {};
+    transactions.forEach(tx => {
+        const category = tx.category || 'Інше';
+        if (category.toLowerCase() === 'дохід') return; // Пропускаємо категорію "дохід"
+        counts[category] = (counts[category] || 0) + 1;
+    });
+    return counts;
+}
+
+
+function renderBarChart() {
+    const stored = localStorage.getItem("transactions");
+    if (!stored) return;
+    
+    const transactions = JSON.parse(stored);
+    const counts = countTransactionsByCategory(transactions);
+    
+    const ctx = document.getElementById("barChart").getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: Object.keys(counts),
+            datasets: [{
+                label: "Кількість транзакцій",
+                data: Object.values(counts),
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision:0
+                    }
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", renderBarChart);
+
+  document.getElementById('stats-search').addEventListener('input', function () {
+  const query = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#stats-table-body tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+});
+  </script>
+
+<script>
+  const menuIcon = document.querySelector('.fa-bars');
+  const menuModal = document.getElementById('menu-modal');
+
+  menuIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menuModal.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (menuModal.classList.contains('show') &&
+        !menuModal.contains(e.target) &&
+        !menuIcon.contains(e.target)) {
+      menuModal.classList.remove('show');
+    }
+  });
+</script>
+</body>
+</html>

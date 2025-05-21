@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>MyBudget - Бюджет і Транзакції</title>
+  <style>
+    
+  </style>
+</head>
+
+<body>
+
+  
+  <nav>
+    <a href="home.html" class="site-name link-as-text"><i class="fa-solid fa-wallet"></i> MyBudget</a>
+    <div class="nav-right">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </nav>
+    <div id="menu-modal" class="menu-modal hidden">
+      <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
+      <a href="stats.html"><i class="fa-solid fa-chart-column"></i> Статистика</a>
+      <a href="about.html"><i class="fa-solid fa-circle-info"></i> Про нас</a>
+    </div>
+    
+    
+    
+  <div class="container">
+    <div class="left-section">
+      <div class="balance-box glass-panel">
+        <div class="balance-text">
+          <span class="balance-label">Загальний баланс:</span>
+          <span class="balance-value" id="balance">0 грн</span>
+          <span class="info-icon" id="balance-info-icon"><i class="fa-solid fa-circle-info"></i></span>  
+        </div>
+      </div>
+      
+      <div class="left-col glass-panel">
+        <div class="pie-chart-container">
+          <div class="stats-header">
+            <span id="stats-month-label" class="month-label">Квітень 2025</span>
+          </div>
+          <div class="pie-chart-wrapper">
+            <button id="stats-prev-month" class="month-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="pie-chart" id="pie-chart"></div>
+            <button id="stats-next-month" class="month-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <hr class="legend-separator">
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="new-expense-block glass-panel">
+        <div class="form-header">
+          <div class="new-expense-box">
+            <div class="new-expense-label">Нова витрата</div>
+          </div>
+          <div class="switch-btn cursor-pointer">
+            <i class="fa-solid fa-rotate"></i>
+          </div>
+        </div>
+      </div>
+    
+      <form id="transaction-form" class="expense-form glass-panel">
+        <div class="input-row">
+          <input type="text" placeholder="Назва" id="name" class="expense-name" required />
+          <input type="number" placeholder="Ціна" id="amount" class="expense-amount" required />
+        </div>
+        <input type="hidden" id="category" />
+        <div class="category-buttons">
+
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Продукти" aria-label="Продукти">
+              <i class="fa-solid fa-apple-whole"></i>
+            </button>
+            <span class="category-label">Продукти</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Транспорт" aria-label="Транспорт">
+              <i class="fa-solid fa-bus"></i>
+            </button>
+            <span class="category-label">Транспорт</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Кафе" aria-label="Кафе">
+              <i class="fa-solid fa-mug-hot"></i>
+            </button>
+            <span class="category-label">Кафе</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Здоров'я" aria-label="Здоров'я">
+              <i class="fa-solid fa-heart-pulse"></i>
+            </button>
+            <span class="category-label">Здоров'я</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Відпочинок" aria-label="Відпочинок">
+              <i class="fa-solid fa-umbrella-beach"></i>
+            </button>
+            <span class="category-label">Відпочинок</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Благодійність" aria-label="Благодійність">
+              <i class="fa-solid fa-hand-holding-heart"></i>
+            </button>
+            <span class="category-label">Благодійність</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Дім" aria-label="Дім">
+              <i class="fa-solid fa-house-chimney"></i>
+            </button>
+            <span class="category-label">Дім</span>
+          </div>
+          <div class="category-wrapper">
+            <button type="button" class="category-btn" data-category="Інше" aria-label="Інше">
+              <i class="fa-solid fa-ellipsis"></i>
+            </button>
+            <span class="category-label">Інше</span>
+          </div>
+        </div>
+        <button type="submit" class="add-expense-btn">Додати витрату</button>
+      </form>
+
+      <form id="income-form" class="glass-panel income" style="display: none;">
+        <input type="text" id="income-name" placeholder="Назва доходу" required>
+        <input type="number" id="income-amount" placeholder="Сума (грн)" required>
+        <button type="submit">Додати дохід</button>
+      </form>
+      
+      <div id="transactions-nav">
+         <button id="history-btn" class="modal-trigger">
+          <i class="fa-solid fa-clock"></i> Історія
+         </button>
+
+        <div id="modal-history" class="modal-overlay">
+          <div class="modal-window">
+            <button id="close-history" class="close-modal">✕</button>
+            <h2>Історія транзакцій</h2>
+            <div class="history-header">
+              <input
+                type="text"
+                id="history-search"
+                placeholder="Пошук..."
+              />
+              <div id="history-month-nav">
+                <button id="prev-month" class="month-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                <span id="current-month-label"></span>
+                <button id="next-month" class="month-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>                
+              </div>
+            </div>
+            <hr class="history-separator">
+            <div id="transaction-history-list" class="transaction-history">
+
+              <div class="transaction-item income">
+                <div class="name">Дохід 1</div>
+                <div class="category">Категорія</div>
+                <div class="amount">100 грн</div>
+              </div>
+            
+              <div class="transaction-item expense">
+                <div class="name">Витрата 1</div>
+                <div class="category">Категорія</div>
+                <div class="amount">-50 грн</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
+         <button id="stats-btn" class="modal-trigger">
+          <i class="fa-solid fa-chart-pie"></i> Статистика
+         </button>
+
+        <div id="modal-stats" class="modal-overlay">
+          <div class="modal-window">
+            <button id="close-stats" class="close-modal">✕</button>
+            <h2>Статистика</h2>
+            <div class="stats-grid" id="stats-grid">
+            </div>
+            
+          </div>
+        </div>
+
+         <button id="more-btn" class="modal-trigger">
+          <i class="fa-solid fa-ellipsis"></i> Додатково
+         </button>
+
+        <div id="modal-more" class="modal-overlay">
+          <div class="modal-window">
+            <button id="close-more" class="close-modal">✕</button>
+            <h2>Додатково</h2>
+        
+            <div id="actions-section" class="settings-section">
+              <h3><i class="fa-solid fa-clipboard"></i> Транзакції</h3>
+              <div class="actions-group">
+                <button id="clear-all" class="settings-btn">Очистити всі транзакції</button>
+                <button id="clear-today" class="settings-btn">Видалити транзакції за сьогодні</button>
+                <button id="clear-week" class="settings-btn">Видалити транзакції за цей тиждень</button>
+              </div>
+            </div>
+        
+            <div id="theme-section" class="settings-section">
+              <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Тема</h3>
+              <div class="theme-options">
+                <button class="theme-btn" data-theme="blue">🔵 Синя</button>
+                <button class="theme-btn" data-theme="light">⚪ Світла</button>
+                <button class="theme-btn" data-theme="pink">
+                  <span class="circle-icon pink"></span> Рожева
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer></footer>
+  <script src="script.js"></script>
+  <script>
+    const menuIcon = document.querySelector('.fa-bars');
+    const menuModal = document.getElementById('menu-modal');
+  
+    menuIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuModal.classList.toggle('show');
+    });
+  
+    document.addEventListener('click', (e) => {
+      if (menuModal.classList.contains('show') &&
+          !menuModal.contains(e.target) &&
+          !menuIcon.contains(e.target)) {
+        menuModal.classList.remove('show');
+      }
+    });
+  </script>
+  
+  
+  
+  <div id="balance-tooltip"></div>
+  <div id="tooltip" style="position: absolute; pointer-events: none; background: #222; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.9em; opacity: 0; transition: opacity 0.2s; z-index: 999;"></div>
+</body>
+</html>

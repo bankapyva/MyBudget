@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MyBudget - Про нас</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    .about-content {
+      text-align: center;
+      animation: fadePageIn 0.8s ease-out;
+      margin-top: 10px;
+    }
+
+    .about-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .about-content p {
+      font-size: 1.1rem;
+      color: #ccc;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .about-features {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin: 40px 40px 30px; /* збільшили бокові поля */
+}
+
+
+    .about-box {
+  flex: 1 1 28%;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+
+  background: linear-gradient(
+    145deg,
+    rgba(100, 160, 240, 0.25),
+    rgba(180, 220, 255, 0.15)
+  );
+  backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(180, 220, 255, 0.3);
+  box-shadow:
+    0 4px 12px rgba(100, 200, 255, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+
+  transition: all 0.3s ease;
+}
+
+.about-box:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 6px 18px rgba(160, 220, 255, 0.25),
+    0 0 10px rgba(140, 200, 255, 0.15);
+}
+
+
+    .about-box i {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: #5dade2;
+    }
+
+    .about-box h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .about-box p {
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .back-btn {
+  text-decoration: none !important;
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  margin-top: 40px; /* додаємо відступ */
+  display: inline-block;
+}
+
+.left-section {
+  padding: 0 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+    .left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+  </style>
+</head>
+<body>
+
+  <!-- Навігація -->
+  <nav>
+    <a href="home.html" class="site-name link-as-text"><i class="fa-solid fa-wallet"></i> MyBudget</a>
+    <div class="nav-right">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </nav>
+
+  <div id="menu-modal" class="menu-modal hidden">
+    <a href="index.html"><i class="fa-solid fa-house"></i> Головна</a>
+    <a href="stats.html"><i class="fa-solid fa-chart-column"></i> Статистика</a>
+    <a href="about.html"><i class="fa-solid fa-circle-info"></i> Про нас</a>
+  </div>
+  
+  <!-- Основний контейнер -->
+  <div class="container">
+    <div class="left-section">
+      <div class="left-col glass-panel" style="min-height: 300px;">
+        <div class="about-content">
+          <h1><i class="fa-solid fa-users"></i> Про нас</h1>
+          <p>MyBudget — це простий, інтуїтивний застосунок, створений для тих, хто хоче легко керувати своїми фінансами. Ми віримо, що кожен заслуговує на фінансову впевненість, незалежно від рівня досвіду чи знань.</p>
+
+          <div class="about-features">
+            <div class="about-box">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+              <h3>Доступність</h3>
+              <p>Наш сервіс доступний кожному — незалежно від досвіду. Просто, швидко, ефективно.</p>
+            </div>
+            <div class="about-box">
+              <i class="fa-solid fa-shield-halved"></i>
+              <h3>Безпека</h3>
+              <p>Ваші дані зберігаються лише на вашому пристрої. Ми не збираємо нічого зайвого.</p>
+            </div>
+            <div class="about-box">
+              <i class="fa-solid fa-chart-simple"></i>
+              <h3>Аналітика</h3>
+              <p>Детальна статистика та діаграми допоможуть вам краще розуміти свої фінанси.</p>
+            </div>
+          </div>
+
+          <a href="index.html" class="add-expense-btn back-btn">← Назад на головну</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Футер -->
+  <footer></footer>
+
+  <script>
+    const menuIcon = document.querySelector('.fa-bars');
+    const menuModal = document.getElementById('menu-modal');
+
+    menuIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuModal.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (menuModal.classList.contains('show') &&
+          !menuModal.contains(e.target) &&
+          !menuIcon.contains(e.target)) {
+        menuModal.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
