@@ -101,6 +101,25 @@
   justify-content: space-between;
   height: 100%;
 }
+
+.contact-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.contact-icons a {
+  color: #5dade2;
+  font-size: 1.6rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-icons a:hover {
+  color: #3498db;
+  transform: scale(1.2);
+}
+
   </style>
 </head>
 <body>
@@ -146,6 +165,22 @@
           </div>
 
           <a href="index.html" class="add-expense-btn back-btn">← Назад на головну</a>
+
+          <div class="contact-icons" style="margin-top: 40px;">
+  <a href="mailto:mybudget@example.com" target="_blank" title="Email">
+    <i class="fa-solid fa-envelope"></i>
+  </a>
+  <a href="https://t.me/mybudgetapp" target="_blank" title="Telegram">
+    <i class="fa-brands fa-telegram"></i>
+  </a>
+  <a href="https://facebook.com/mybudgetapp" target="_blank" title="Facebook">
+    <i class="fa-brands fa-facebook"></i>
+  </a>
+  <a href="https://instagram.com/mybudgetapp" target="_blank" title="Instagram">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+</div>
+
         </div>
       </div>
     </div>
